@@ -2,6 +2,15 @@
 \usepackage{663report,times}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsbsy}
+\usepackage{textcomp}
+\usepackage{listings}
+
 %\documentstyle[nips14submit_09,times,art10]{article} % For LaTeX 2.09
 
 
@@ -42,11 +51,34 @@ Markov chain Monte Carlo (MCMC) has been extensively applied in many complicated
 
 \section{Introduction}
 
-\subsection{}
 
-\subsection{}
 
 \section{The algorithm and its variations}
+In this section, we will introduce the multiple-try metropolis as well as its variations. In the traditional M-H algorithm, we have the following settings. Firstly, a proposal function $T(x_i,x_{i+1})$ is defined, which clarifies the relationship between the $t$th trial and the $(t+1)$th candidate parameters. Next, a function used for evaluating the likelihood of a trial is defined as follows,
+\begin{equation}
+w(x_i,x_{i+1}) = \pi(x_i) T(x_i,x_{i+1}) \lambda (x_i,x_{i+1})
+\end{equation}
+where $\pi(x_i)$ is the probability distribution of $x_i$, $\lambda (x_i,x_{i+1})$ is an adjusting function to enhance the power of the algorithm, which is nonnegative and symmetric.
+
+Two basic requirements should be satisfied.\\
+1. $T(x_i,x_{i+1})  > 0$ if and only if $T(x_{i+1},x_i)  > 0$\\
+2. If $T(x_i,x_{i+1})  > 0$, then $\lambda (x_i,x_{i+1}) >0$.\\
+The choices of $\lambda (x_i,x_{i+1})$ vary in different situations. 
+
+
+\subsection{Multiple-try Metropolis}
+The MTM algorithm can be achieved through 4 steps.\\
+1. Sample $k$ iid trials $x_{t+1}^{1},..., x_{t+1}^{k}$ from $T(x_i, .)$. Compute $w(x_{t+1}^{j},x_{t})$ for $j=1,...,k$.\\
+2. Select $\mathbb{X} = x_{t+1}$ among the proposal set $\{x_{t+1}^{1},..., x_{t+1}^{k}\}$ with probability propotional to $\{w(x_{t+1}^{1,x_i}),...,w(x_{t+1}^{k},x_i)\}$.\\
+3. Sample $x_{\star}^{1},...,x_{\star}^{k-1}$ from the distribution $T(x_{t+1},.)$, and let $x_{\star}^{k}=x_{t}$.\\
+4. Accept $x_{t+1}$ with probability 
+\begin{equation}
+r = \text{min}\left\{ 1, \frac{w(x_{t+1}^{1},x_{t})+\cdot \cdot \cdot+w(x_{t+1}^{k},x_{t})} {w(x_{\star}^{1},x_{t+1})+\cdot \cdot \cdot+w(x_{\star}^{k},x_{t+1})} \right\}
+\end{equation}
+and reject it with probability $1-r$. The quantity $r$ is called generlaized M-H ratio. 
+\subsection{Conjugate-Gradient Monte Carlo}
+
+
 
 
 \section{Implementation}
